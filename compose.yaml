@@ -16,6 +16,7 @@ services:
     volumes:
       - ./config/luanti:/etc/minetest:ro
       - ./images/luanti/entrypoint.sh:/usr/local/bin/marghl-entrypoint.sh:ro
+      - ./secrets/server.conf:/run/secrets/server.conf:ro
       - ./secrets/mapserver.conf:/run/secrets/mapserver.conf:ro
       - ./secrets/lorebridge.conf:/run/secrets/lorebridge.conf:ro
       - ${LUANTI_RUNTIME_PATH:-./state/runtime}:/var/lib/minetest/.minetest
