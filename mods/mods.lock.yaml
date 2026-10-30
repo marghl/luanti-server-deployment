@@ -1,0 +1,7 @@
+# Produktions-Mods werden durch Repository und unveraenderlichen Commit
+# festgelegt. Vor dem ersten Build wird die aktive Modliste aus world.mt
+# inventarisiert.
+mods:
+  mapserver:
+    source: https://github.com/minetest-mapserver/mapserver_mod.git
+    commit: 40bb7853eab2326e2a3830de3f759941dede7469

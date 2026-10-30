@@ -1,0 +1,11 @@
+{$MAPSERVER_SITE:http://map.localhost} {
+	reverse_proxy mapserver:8080
+}
+
+{$WIKI_SITE:http://wiki.localhost} {
+	reverse_proxy mediawiki:80
+}
+
+:80 {
+	respond /health "ok" 200
+}

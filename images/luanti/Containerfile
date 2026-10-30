@@ -1,0 +1,6 @@
+ARG LUANTI_IMAGE=ghcr.io/luanti-org/luanti:5.17.0
+FROM ${LUANTI_IMAGE}
+
+# Spaeter werden Spiel und festgelegte Mod-Commits in dieses Image aufgenommen.
+# Fuer den ersten Wiederherstellungstest werden sie schreibgeschuetzt vom Host
+# eingebunden, damit der gesicherte Stand zunaechst unveraendert getestet wird.

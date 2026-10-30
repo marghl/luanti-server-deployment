@@ -1,0 +1,20 @@
+ARG GO_IMAGE=docker.io/library/golang:1.25-alpine
+ARG ALPINE_IMAGE=docker.io/library/alpine:3.22
+
+FROM ${GO_IMAGE} AS build
+ARG MAPSERVER_VERSION=v4.10.0
+RUN apk add --no-cache git
+RUN git clone --depth 1 --branch "${MAPSERVER_VERSION}" \
+    https://github.com/minetest-mapserver/mapserver.git /src
+WORKDIR /src
+RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/minetest-mapserver .
+
+FROM ${ALPINE_IMAGE}
+RUN apk add --no-cache ca-certificates tzdata \
+    && addgroup -S -g 1000 mapserver \
+    && adduser -S -D -H -u 1000 -G mapserver mapserver
+COPY --from=build /out/minetest-mapserver /usr/local/bin/minetest-mapserver
+WORKDIR /data
+USER mapserver
+EXPOSE 8080
+ENTRYPOINT ["/usr/local/bin/minetest-mapserver"]

@@ -1,0 +1,30 @@
+# Lokale Overrides. Der Prozess laeuft mit der lokalen UID/GID, damit die
+# Arbeitskopie der Welt ohne root oder chown beschreibbar bleibt.
+services:
+  luanti:
+    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
+    userns_mode: keep-id
+    ports:
+      - "${LUANTI_PORT:-30000}:30000/udp"
+    restart: "no"
+
+  mapserver:
+    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
+    userns_mode: keep-id
+    ports:
+      - "${MAPSERVER_PORT:-8081}:8080/tcp"
+    restart: "no"
+
+  mediawiki:
+    ports:
+      - "${MEDIAWIKI_PORT:-8082}:80/tcp"
+    restart: "no"
+
+  mediawiki-db:
+    restart: "no"
+
+  caddy:
+    ports:
+      - "${HTTP_PORT:-8080}:80/tcp"
+      - "${HTTPS_PORT:-8443}:443/tcp"
+    restart: "no"

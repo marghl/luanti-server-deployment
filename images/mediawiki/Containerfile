@@ -1,0 +1,7 @@
+FROM docker.io/library/mediawiki:1.43.11
+
+# Der Core stammt aus dem lokal gepinnten Checkout. Das Basisimage liefert
+# die zur selben Version passenden PHP-Erweiterungen und Composer-Abhängigkeiten.
+COPY --chown=www-data:www-data . /var/www/html
+RUN rm -rf /var/www/html/.git
+

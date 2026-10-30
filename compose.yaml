@@ -1,0 +1,102 @@
+name: ${COMPOSE_PROJECT_NAME:-marghl-luanti}
+
+services:
+  luanti:
+    image: ${LUANTI_IMAGE:-ghcr.io/luanti-org/luanti:5.17.0}
+    entrypoint:
+      - /bin/sh
+      - /usr/local/bin/marghl-entrypoint.sh
+    command:
+      - --config
+      - /tmp/minetest.conf
+      - --gameid
+      - minetest
+      - --worldname
+      - marghl
+    volumes:
+      - ./config/luanti:/etc/minetest:ro
+      - ./images/luanti/entrypoint.sh:/usr/local/bin/marghl-entrypoint.sh:ro
+      - ./secrets/mapserver.conf:/run/secrets/mapserver.conf:ro
+      - ./secrets/lorebridge.conf:/run/secrets/lorebridge.conf:ro
+      - ${LUANTI_RUNTIME_PATH:-./state/runtime}:/var/lib/minetest/.minetest
+      - ${LUANTI_WORLD_PATH:-./state/world}:/var/lib/minetest/.minetest/worlds/marghl
+      - ${LUANTI_GAME_PATH:-../serverdaten/luanti/games}:/var/lib/minetest/.minetest/games:ro
+      - ${LUANTI_MODS_PATH:-./state/mods}:/var/lib/minetest/.minetest/mods:ro
+      - ${LUANTI_MOD_DATA_PATH:-../serverdaten/luanti/.minetest/mod_data}:/var/lib/minetest/.minetest/mod_data:ro
+    networks:
+      - backend
+    stop_grace_period: 2m
+
+  mapserver:
+    image: ${MAPSERVER_IMAGE:-localhost/marghl-mapserver:4.10.0}
+    build:
+      context: ./images/mapserver
+      args:
+        MAPSERVER_VERSION: ${MAPSERVER_VERSION:-v4.10.0}
+    working_dir: /data
+    volumes:
+      - ${LUANTI_WORLD_PATH:-./state/world}:/world
+      - ${MAPSERVER_DATA_PATH:-./state/mapserver}:/data
+      - ./config/mapserver/mapserver.json:/data/mapserver.json
+    networks:
+      - frontend
+      - backend
+    stop_grace_period: 30s
+
+  mediawiki-db:
+    image: ${MEDIAWIKI_DB_IMAGE:-docker.io/library/mariadb:11.4.13}
+    env_file:
+      - ./secrets/mediawiki.env
+    volumes:
+      - mediawiki-db-data:/var/lib/mysql
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    stop_grace_period: 1m
+
+  mediawiki:
+    image: ${MEDIAWIKI_IMAGE:-localhost/marghl-mediawiki:1.43.11}
+    build:
+      context: ../mediawiki
+      dockerfile: ../docker/images/mediawiki/Containerfile
+    depends_on:
+      mediawiki-db:
+        condition: service_healthy
+    env_file:
+      - ./secrets/mediawiki.env
+    environment:
+      MEDIAWIKI_SERVER: ${MEDIAWIKI_SERVER:-http://localhost:8082}
+    volumes:
+      - ./secrets/LocalSettings.php:/var/www/html/LocalSettings.php:ro
+      - mediawiki-images:/var/www/html/images
+    networks:
+      - frontend
+      - backend
+    stop_grace_period: 30s
+
+  caddy:
+    image: ${CADDY_IMAGE:-docker.io/library/caddy:2.10.2}
+    environment:
+      MAPSERVER_SITE: ${MAPSERVER_SITE:-http://map.localhost}
+      WIKI_SITE: ${WIKI_SITE:-http://wiki.localhost}
+    volumes:
+      - ./config/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    networks:
+      - frontend
+    stop_grace_period: 30s
+
+networks:
+  frontend:
+  backend:
+
+volumes:
+  mediawiki-db-data:
+  mediawiki-images:
+  caddy-data:
+  caddy-config:

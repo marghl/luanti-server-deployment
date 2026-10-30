@@ -1,0 +1,31 @@
+# Produktive Overrides. Produktive Pfade und UID/GID werden auf dem Server in
+# dessen .env-Datei festgelegt. Vor Einsatz muessen Mods in ein unveraenderliches
+# Image ueberfuehrt werden; die lokalen Quellcode-Mounts aus compose.yaml sind
+# nur fuer den Wiederherstellungs- und Migrationstest gedacht.
+services:
+  luanti:
+    user: "${SERVICE_UID:-109}:${SERVICE_GID:-111}"
+    ports:
+      - "${LUANTI_PORT:-30000}:30000/udp"
+    restart: unless-stopped
+
+  mapserver:
+    user: "${SERVICE_UID:-109}:${SERVICE_GID:-111}"
+    restart: unless-stopped
+
+  mediawiki:
+    environment:
+      MEDIAWIKI_SERVER: https://wiki.marghl.de
+    restart: unless-stopped
+
+  mediawiki-db:
+    restart: unless-stopped
+
+  caddy:
+    environment:
+      MAPSERVER_SITE: map.marghl.de
+      WIKI_SITE: wiki.marghl.de
+    ports:
+      - "80:80/tcp"
+      - "443:443/tcp"
+    restart: unless-stopped

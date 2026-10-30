@@ -1,0 +1,10 @@
+.env
+*.log
+
+state/*
+!state/.gitkeep
+
+secrets/*
+!secrets/README.md
+
+config/mapserver/mapserver.json

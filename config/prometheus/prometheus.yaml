@@ -1,0 +1,5 @@
+global:
+  scrape_interval: 15s
+
+# Scrape-Ziele werden zusammen mit den Compose-Diensten eingetragen.
+scrape_configs: []
