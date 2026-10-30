@@ -14,7 +14,6 @@ services:
       - --worldname
       - marghl
     volumes:
-      - ./config/luanti:/etc/minetest:ro
       - ./images/luanti/entrypoint.sh:/usr/local/bin/marghl-entrypoint.sh:ro
       - ./secrets/server.conf:/run/secrets/server.conf:ro
       - ./secrets/mapserver.conf:/run/secrets/mapserver.conf:ro
