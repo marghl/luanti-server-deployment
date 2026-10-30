@@ -3,5 +3,5 @@
 # inventarisiert.
 mods:
   mapserver:
-    source: https://github.com/minetest-mapserver/mapserver_mod.git
-    commit: 40bb7853eab2326e2a3830de3f759941dede7469
+    source: https://github.com/marghl/mapserver_mod.git
+    commit: c7f7be854b4f907f95c04b33a0ba37b1af71d69c
