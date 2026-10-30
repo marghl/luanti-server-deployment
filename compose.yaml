@@ -32,6 +32,7 @@ services:
     image: ${MAPSERVER_IMAGE:-localhost/marghl-mapserver:4.10.0}
     build:
       context: ./images/mapserver
+      dockerfile: Containerfile
       args:
         MAPSERVER_VERSION: ${MAPSERVER_VERSION:-v4.10.0}
     working_dir: /data
