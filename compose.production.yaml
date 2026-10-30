@@ -5,6 +5,8 @@
 services:
   luanti:
     user: "${SERVICE_UID:-109}:${SERVICE_GID:-111}"
+    environment:
+      HOME: /var/lib/minetest
     ports:
       - "${LUANTI_PORT:-30000}:30000/udp"
     restart: unless-stopped
