@@ -4,6 +4,9 @@ services:
   luanti:
     user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
     userns_mode: keep-id
+    volumes:
+      - ./config/luanti/server.conf.test:/etc/minetest/server.conf:ro
+      - ./config/luanti/world.mt.test:/var/lib/minetest/.minetest/worlds/marghl/world.mt:ro
     ports:
       - "${LUANTI_PORT:-30000}:30000/udp"
     restart: "no"

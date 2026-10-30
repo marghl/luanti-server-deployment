@@ -5,12 +5,11 @@
 services:
   luanti:
     user: "${SERVICE_UID:-109}:${SERVICE_GID:-111}"
-    entrypoint: /usr/local/bin/production-entrypoint.sh
     environment:
       HOME: /var/lib/minetest
     volumes:
-      - ./config/luanti/world.production.mt:/etc/minetest/world.production.mt:ro
-      - ./images/luanti/production-entrypoint.sh:/usr/local/bin/production-entrypoint.sh:ro
+      - ./config/luanti/server.conf.produktiv:/etc/minetest/server.conf:ro
+      - ./config/luanti/world.mt.produktiv:/var/lib/minetest/.minetest/worlds/marghl/world.mt:ro
     ports:
       - "${LUANTI_PORT:-30000}:30000/udp"
     restart: unless-stopped

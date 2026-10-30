@@ -16,6 +16,18 @@ des Luanti-Servers mit Mapserver, Prometheus, Grafana und Reverse Proxy.
 - `compose.local.yaml`: lokale Ports, Weltkopie und Entwicklungsoptionen
 - `compose.production.yaml`: produktive Restart-Regeln und Datenpfade
 
+Die Luanti-Konfiguration ist nach Kontext getrennt und vollstaendig
+versioniert:
+
+- `config/luanti/server.conf.test` und `config/luanti/world.mt.test`
+- `config/luanti/server.conf.produktiv` und
+  `config/luanti/world.mt.produktiv`
+
+Das jeweilige Compose-Override bindet die passenden Dateien als
+`server.conf` und `world.mt` ein. Beim Start werden danach die unveraendert
+lokalen Dateien `secrets/server.conf`, `secrets/mapserver.conf` und
+`secrets/lorebridge.conf` an die Serverkonfiguration angehaengt.
+
 Der erste Migrationsschritt startet Luanti 5.17.0 mit der wiederhergestellten
 SQLite-Welt. Spiel und Mods werden schreibgeschuetzt eingebunden. Die Welt
 unter `state/world` und der Modbestand unter `state/mods` sind separate
