@@ -12,4 +12,7 @@ Erwartete Dateien:
 - `mapserver.conf`: interne Mapserver-URL und gemeinsamer API-Schluessel
 - `lorebridge.conf`: gemeinsamer LoreBridge-API-Schluessel
 - `mediawiki.env`: Datenbankzugang fuer MediaWiki und MariaDB
-- `LocalSettings.php`: produktive MediaWiki-Konfiguration
+
+`mediawiki.env` wird auf dem Zielsystem aus `mediawiki.example.env` erzeugt.
+Die `LocalSettings.php` liegt ohne eingebettete Geheimnisse versioniert unter
+`config/mediawiki/` und liest sensible Werte aus der Umgebung.

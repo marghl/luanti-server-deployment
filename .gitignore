@@ -6,5 +6,6 @@ state/*
 
 secrets/*
 !secrets/README.md
+!secrets/mediawiki.example.env
 
 config/mapserver/mapserver.json
