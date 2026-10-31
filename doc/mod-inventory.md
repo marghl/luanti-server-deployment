@@ -24,8 +24,8 @@ sein.
 
 ## Ergebnis
 
-- 78 reproduzierbare Git-Checkouts
-- 61 unveraenderte Checkouts mit `source = existing`
+- 79 reproduzierbare Git-Checkouts
+- 60 unveraenderte Checkouts mit `source = existing`
 - Git-Fetch und Synchronisierung ueber HTTPS
 - Git-Push ueber eine separate SSH-`pushurl`
 - vorherige Verzeichnisse der aktuellen Runde unter
@@ -34,6 +34,8 @@ sein.
   `state/mods-backup/minetest-mods-2026-10-31/`
 - vorherige Verzeichnisse der anhand von Maintainer-Hinweisen gefundenen Runde
   unter `state/mods-backup/hinted-2026-10-31/`
+- vorheriges `3d_armor`-Verzeichnis unter
+  `state/mods-backup/3d-armor-2026-10-31/`
 - vorherige Verzeichnisse der ersten Runde unter
   `state/mods-backup/confirmed-2026-10-31/`
 
@@ -53,6 +55,7 @@ und `tubetool`. `replacer` war bereits zuvor als eigener Checkout gepinnt.
 
 | Checkout | Repository | Commit |
 | --- | --- | --- |
+| `3d_armor` | `https://github.com/minetest-mods/3d_armor` | `a4f311cbcf8125b4b83ba884d1d0d12f018021da` |
 | `anvil` | `https://github.com/minetest-mods/anvil` | `9bc6f63af822269c16db69cc0f8e4710207aa1a7` |
 | `areas` | `https://github.com/minetest-mods/areas` | `0dc1c67fff21142e6f2081a9280a6b63d65b4901` |
 | `digilines` | `https://github.com/minetest-mods/digilines` | `3f6e553b7c7fe7017a96527b9cb26f367cb6f8b7` |
