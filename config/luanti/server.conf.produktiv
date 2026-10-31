@@ -36,5 +36,5 @@ jumpdrive.allow_emerge = true
 bones_mode = keep
 secure.http_mods = blockexchange,mapserver,lore
 lore.wiki_api_url = http://mediawiki/rest.php/lorebridge/v1/tickets
-lore.wiki_public_url = http://localhost:8082
+lore.wiki_public_url = https://wiki.marghl.de
 lore.server_id = dumpster-fire
