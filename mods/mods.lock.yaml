@@ -1,7 +1,0 @@
-# Produktions-Mods werden durch Repository und unveraenderlichen Commit
-# festgelegt. Vor dem ersten Build wird die aktive Modliste aus world.mt
-# inventarisiert.
-mods:
-  mapserver:
-    source: https://github.com/marghl/mapserver_mod.git
-    commit: c7f7be854b4f907f95c04b33a0ba37b1af71d69c

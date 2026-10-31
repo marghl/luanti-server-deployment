@@ -16,17 +16,15 @@ des Luanti-Servers mit Mapserver, Prometheus, Grafana und Reverse Proxy.
 - `compose.local.yaml`: lokale Ports, Weltkopie und Entwicklungsoptionen
 - `compose.production.yaml`: produktive Restart-Regeln und Datenpfade
 
-Die Luanti-Konfiguration ist nach Kontext getrennt und vollstaendig
-versioniert:
+Die Luanti-Konfiguration wird aus `config/base/` und den einzelnen
+Modkonfigurationen unter `config/mods/` erzeugt. Lokal und in Produktion
+werden dieselben Dateien aus `generated/` eingebunden. Unterschiede zwischen
+Test und Produktion entstehen damit ausschliesslich durch den verwendeten
+Git-Branch und lokale Geheimnisse beziehungsweise Laufzeitpfade.
 
-- `config/luanti/server.conf.test` und `config/luanti/world.mt.test`
-- `config/luanti/server.conf.produktiv` und
-  `config/luanti/world.mt.produktiv`
-
-Das jeweilige Compose-Override bindet die passenden Dateien als
-`server.conf` und `world.mt` ein. Beim Start werden danach die unveraendert
-lokalen Dateien `secrets/server.conf`, `secrets/mapserver.conf` und
-`secrets/lorebridge.conf` an die Serverkonfiguration angehaengt.
+Beim Start werden die nicht versionierten Dateien `secrets/server.conf`,
+`secrets/mapserver.conf` und `secrets/lorebridge.conf` an die erzeugte
+Serverkonfiguration angehaengt.
 
 Der erste Migrationsschritt startet Luanti 5.17.0 mit der wiederhergestellten
 SQLite-Welt. Spiel und Mods werden schreibgeschuetzt eingebunden. Die Welt
@@ -67,6 +65,7 @@ Die produktive Compose-Konfiguration wird explizit ohne lokale Overrides
 gestartet:
 
 ```bash
+./scripts/modconfig.sh generate
 docker compose -f compose.yaml -f compose.production.yaml up -d
 ```
 
@@ -83,11 +82,57 @@ cp .env.example .env
 
 - `config/`: versionierbare Dienstkonfiguration
 - `images/`: selbst gebaute Images
-- `mods/`: Mod-Quellen und festgelegte Versionen
 - `scripts/`: Betriebs- und Testbefehle
 - `tests/`: Integrations- und Wiederherstellungstests
 - `state/`: lokale Laufzeitdaten; wird nicht versioniert
 - `secrets/`: lokale Geheimnisse; wird nicht versioniert
+
+## Modkonfiguration
+
+Der Teststand wird nicht direkt in `world.mt` oder `server.conf` gepflegt.
+Jeder erkannte Mod besitzt stattdessen ein Verzeichnis unter `config/mods/`:
+
+```text
+config/mods/mapserver/
+|-- mod.conf
+`-- settings.conf
+```
+
+Alle Dateien verwenden ausschliesslich `schluessel = wert`; `#` beginnt einen
+Kommentar. `mod.conf` legt Aktivierung, Checkout-Verzeichnis, Modpfad,
+Abhaengigkeiten und - soweit bereits bekannt - Git-URL und Commit fest.
+`settings.conf` dokumentiert die aus `settingtypes.txt` importierten
+Standardwerte auskommentiert. Nur nicht auskommentierte Werte werden aktiv.
+
+Die Dateien `generated/server.conf` und `generated/world.mt` werden daraus
+erzeugt und sowohl lokal als auch produktiv in den Luanti-Container
+eingebunden:
+
+```bash
+./scripts/modconfig.sh generate
+./scripts/modconfig.sh verify
+./scripts/modconfig.sh status
+./scripts/modconfig.sh sync --check
+./scripts/modconfig.sh sync
+```
+
+`./scripts/start.sh` erzeugt die Konfiguration vor jedem Start erneut.
+Generierte Dateien sollen nicht von Hand geaendert werden.
+
+`sync --check` prueft die Checkout-Struktur, Git-URLs und lokale Aenderungen,
+ohne Dateien anzufassen. `sync` klont fehlende Git-Checkouts und stellt
+vorhandene saubere Checkouts exakt auf den in `git_commit` festgelegten Stand.
+Zum Abrufen wird die HTTPS-URL aus dem Manifest verwendet. Jeder von `sync`
+verwaltete Checkout erhaelt zusaetzlich eine SSH-`pushurl`, sodass ein
+manuelles `git push` ueber SSH laeuft.
+Mehrere Mods eines Modpacks werden dabei als ein gemeinsamer Checkout
+behandelt. Bei lokalen Aenderungen, abweichender Herkunft oder
+widerspruechlichen Manifesten wird vor der ersten Aenderung abgebrochen.
+
+Ein `source = existing` markiert einen aus der Sicherung uebernommenen Mod,
+dessen Herkunft noch inventarisiert werden muss. Erst nach Eintrag von
+`git_url` und `git_commit` ist dieser Checkout reproduzierbar. `sync` laesst
+solche Checkouts unveraendert und loescht auch keine unbekannten Verzeichnisse.
 
 Produktive Daten sollen nicht innerhalb dieses Repositories liegen. Ihre
 Pfade werden ueber die `.env`-Datei konfiguriert. `SERVICE_UID` und

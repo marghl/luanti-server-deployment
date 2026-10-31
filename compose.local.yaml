@@ -7,8 +7,8 @@ services:
     environment:
       HOME: /var/lib/minetest
     volumes:
-      - ./config/luanti/server.conf.test:/etc/minetest/server.conf:ro
-      - ./config/luanti/world.mt.test:/var/lib/minetest/.minetest/worlds/marghl/world.mt:ro
+      - ./generated/server.conf:/etc/minetest/server.conf:ro
+      - ./generated/world.mt:/var/lib/minetest/.minetest/worlds/marghl/world.mt:ro
     ports:
       - "${LUANTI_PORT:-30000}:30000/udp"
     restart: "no"
