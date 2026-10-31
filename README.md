@@ -89,6 +89,39 @@ cp .env.example .env
 - `state/`: lokale Laufzeitdaten; wird nicht versioniert
 - `secrets/`: lokale Geheimnisse; wird nicht versioniert
 
+## Modkonfiguration
+
+Der Teststand wird nicht direkt in `world.mt` oder `server.conf` gepflegt.
+Jeder erkannte Mod besitzt stattdessen ein Verzeichnis unter `config/mods/`:
+
+```text
+config/mods/mapserver/
+|-- mod.conf
+`-- settings.conf
+```
+
+Alle Dateien verwenden ausschliesslich `schluessel = wert`; `#` beginnt einen
+Kommentar. `mod.conf` legt Aktivierung, Checkout-Verzeichnis, Modpfad,
+Abhaengigkeiten und - soweit bereits bekannt - Git-URL und Commit fest.
+`settings.conf` dokumentiert die aus `settingtypes.txt` importierten
+Standardwerte auskommentiert. Nur nicht auskommentierte Werte werden aktiv.
+
+Die Dateien `generated/server.conf` und `generated/world.mt` werden daraus
+erzeugt und lokal in den Luanti-Container eingebunden:
+
+```bash
+./scripts/modconfig.sh generate
+./scripts/modconfig.sh verify
+./scripts/modconfig.sh status
+```
+
+`./scripts/start.sh` erzeugt die Konfiguration vor jedem Start erneut.
+Generierte Dateien sollen nicht von Hand geaendert werden.
+
+Ein `source = existing` markiert einen aus der Sicherung uebernommenen Mod,
+dessen Herkunft noch inventarisiert werden muss. Erst nach Eintrag von
+`git_url` und `git_commit` ist dieser Checkout reproduzierbar.
+
 Produktive Daten sollen nicht innerhalb dieses Repositories liegen. Ihre
 Pfade werden ueber die `.env`-Datei konfiguriert. `SERVICE_UID` und
 `SERVICE_GID` muessen der numerischen UID/GID des produktiven Dienstbenutzers
