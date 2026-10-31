@@ -122,8 +122,9 @@ Generierte Dateien sollen nicht von Hand geaendert werden.
 `sync --check` prueft die Checkout-Struktur, Git-URLs und lokale Aenderungen,
 ohne Dateien anzufassen. `sync` klont fehlende Git-Checkouts und stellt
 vorhandene saubere Checkouts exakt auf den in `git_commit` festgelegten Stand.
-Git-Quellen muessen dabei als SSH-URL eingetragen sein; HTTPS-Quellen werden
-von der Validierung abgelehnt.
+Zum Abrufen wird die HTTPS-URL aus dem Manifest verwendet. Jeder von `sync`
+verwaltete Checkout erhaelt zusaetzlich eine SSH-`pushurl`, sodass ein
+manuelles `git push` ueber SSH laeuft.
 Mehrere Mods eines Modpacks werden dabei als ein gemeinsamer Checkout
 behandelt. Bei lokalen Aenderungen, abweichender Herkunft oder
 widerspruechlichen Manifesten wird vor der ersten Aenderung abgebrochen.
