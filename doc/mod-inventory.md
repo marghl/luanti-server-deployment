@@ -24,7 +24,7 @@ sein.
 
 ## Ergebnis
 
-- 113 reproduzierbare Git-Checkouts
+- 114 reproduzierbare Git-Checkouts
 - 26 unveraenderte Checkouts mit `source = existing`
 - Git-Fetch und Synchronisierung ueber HTTPS
 - Git-Push ueber eine separate SSH-`pushurl`
@@ -62,12 +62,14 @@ sein.
 | `tubelib2` | `https://github.com/joe7575/tubelib2` | `29edfd69e93d1cbdacdc32897c68d5e30de13d2b` |
 | `vines` | `https://github.com/bas080/vines` | `e41377aa90d091dbae520751165052880b95ce28` |
 | `worldedit` | `https://github.com/Uberi/Minetest-WorldEdit` | `62ffafe3bcb386600c431ef3840d91c3c8f85639` |
+| `wrench` | `https://github.com/mt-mods/wrench` | `b8079abcf7c303e18f0c140c997fb5a6f76851b6` |
 | `xdecor` | `https://codeberg.org/Wuzzy/xdecor-libre` | `43a77535eab1148937e4b2ea1263d2a60700e362` |
 
 `prefab` war bereits auf das angegebene `mt-mods`-Repository gepinnt. Das
-aktive `wrench` ist Bestandteil des lokalen `technic_plus`-Checkouts und
-wurde deshalb nicht durch das eigenstaendige Repository `mt-mods/wrench`
-ersetzt.
+zuvor in `technic_plus` enthaltene `wrench` wurde auf den inhaltsgleichen
+Commit `b8079abcf7c303e18f0c140c997fb5a6f76851b6` aus dem eigenstaendigen
+Repository `mt-mods/wrench` umgestellt. `concrete`, der zweite Mod aus
+`technic_plus`, wurde deaktiviert.
 
 ## Zuvor anhand direkter Hinweise uebernommene Checkouts
 
