@@ -24,8 +24,8 @@ sein.
 
 ## Ergebnis
 
-- 79 reproduzierbare Git-Checkouts
-- 60 unveraenderte Checkouts mit `source = existing`
+- 81 reproduzierbare Git-Checkouts
+- 58 unveraenderte Checkouts mit `source = existing`
 - Git-Fetch und Synchronisierung ueber HTTPS
 - Git-Push ueber eine separate SSH-`pushurl`
 - vorherige Verzeichnisse der aktuellen Runde unter
@@ -36,13 +36,17 @@ sein.
   unter `state/mods-backup/hinted-2026-10-31/`
 - vorheriges `3d_armor`-Verzeichnis unter
   `state/mods-backup/3d-armor-2026-10-31/`
+- vorherige Verzeichnisse von `adaptation_modpack` und `morelights` unter
+  `state/mods-backup/adaptation-morelights-2026-10-31/`
 - vorherige Verzeichnisse der ersten Runde unter
   `state/mods-backup/confirmed-2026-10-31/`
 
-## Anhand von Maintainer-Hinweisen uebernommene Checkouts
+## Anhand direkter Hinweise uebernommene Checkouts
 
 | Checkout | Repository | Commit |
 | --- | --- | --- |
+| `adaptation_modpack` | `https://github.com/sfence/adaptation_modpack` | `3fc5886b0c743a6c8b32a210fe9ba4b3881ef07e` |
+| `morelights` | `https://github.com/random-geek/morelights` | `f4aa82a31e8d479b3b16ad6766d15370c1fec729` |
 | `postool` | `https://github.com/SwissalpS/postool` | `0dc16fd9d7784f742657f8bfd0aac6c0ba3f17b7` |
 | `scifi_nodes` | `https://github.com/D00Med/scifi_nodes` | `2eb584147218f59262fdb035f6af5810dda675bb` |
 | `vizlib` | `https://github.com/OgelGames/vizlib` | `690402e1f54cd7e4262e16dc64a47770f15bed25` |
