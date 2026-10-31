@@ -1,16 +1,17 @@
 #!/bin/sh
 set -eu
 
-if command -v podman >/dev/null 2>&1; then
-	CONTAINER_TOOL=podman
+if command -v podman-compose >/dev/null 2>&1; then
+	exec podman-compose \
+		-f compose.yaml \
+		-f compose.local.yaml \
+		"$@"
 elif command -v docker >/dev/null 2>&1; then
-	CONTAINER_TOOL=docker
+	exec docker compose \
+		-f compose.yaml \
+		-f compose.local.yaml \
+		"$@"
 else
-	echo "Weder podman noch docker wurde gefunden." >&2
+	echo "Weder podman-compose noch docker compose wurde gefunden." >&2
 	exit 127
 fi
-
-exec "$CONTAINER_TOOL" compose \
-	-f compose.yaml \
-	-f compose.local.yaml \
-	"$@"
