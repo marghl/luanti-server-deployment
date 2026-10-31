@@ -93,6 +93,8 @@ def checkout_groups(
         if source == "git":
             if not data.get("git_url"):
                 errors.append(f"{name}: git_url fehlt")
+            elif not data["git_url"].startswith(("git@", "ssh://")):
+                errors.append(f"{name}: git_url muss eine SSH-URL sein")
             if not re.fullmatch(r"[0-9a-fA-F]{40}", data.get("git_commit", "")):
                 errors.append(f"{name}: git_commit muss ein vollstaendiger Commit-Hash sein")
         groups.setdefault(checkout, []).append((name, data))
