@@ -24,16 +24,30 @@ sein.
 
 ## Ergebnis
 
-- 74 reproduzierbare Git-Checkouts
-- 65 unveraenderte Checkouts mit `source = existing`
+- 78 reproduzierbare Git-Checkouts
+- 61 unveraenderte Checkouts mit `source = existing`
 - Git-Fetch und Synchronisierung ueber HTTPS
 - Git-Push ueber eine separate SSH-`pushurl`
 - vorherige Verzeichnisse der aktuellen Runde unter
   `state/mods-backup/preferred-2026-10-31/`
 - vorherige Verzeichnisse der `minetest-mods`-Runde unter
   `state/mods-backup/minetest-mods-2026-10-31/`
+- vorherige Verzeichnisse der anhand von Maintainer-Hinweisen gefundenen Runde
+  unter `state/mods-backup/hinted-2026-10-31/`
 - vorherige Verzeichnisse der ersten Runde unter
   `state/mods-backup/confirmed-2026-10-31/`
+
+## Anhand von Maintainer-Hinweisen uebernommene Checkouts
+
+| Checkout | Repository | Commit |
+| --- | --- | --- |
+| `postool` | `https://github.com/SwissalpS/postool` | `0dc16fd9d7784f742657f8bfd0aac6c0ba3f17b7` |
+| `scifi_nodes` | `https://github.com/D00Med/scifi_nodes` | `2eb584147218f59262fdb035f6af5810dda675bb` |
+| `vizlib` | `https://github.com/OgelGames/vizlib` | `690402e1f54cd7e4262e16dc64a47770f15bed25` |
+| `metatool` | `https://github.com/S-S-X/metatool` | `638768f198718e156f6427bc3d79e4b90112b211` |
+
+`metatool` enthaelt auch `containertool`, `luatool`, `magic_pen`, `sharetool`
+und `tubetool`. `replacer` war bereits zuvor als eigener Checkout gepinnt.
 
 ## Aus `minetest-mods` uebernommene Checkouts
 
