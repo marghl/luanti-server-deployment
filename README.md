@@ -112,14 +112,24 @@ eingebunden:
 ./scripts/modconfig.sh generate
 ./scripts/modconfig.sh verify
 ./scripts/modconfig.sh status
+./scripts/modconfig.sh sync --check
+./scripts/modconfig.sh sync
 ```
 
 `./scripts/start.sh` erzeugt die Konfiguration vor jedem Start erneut.
 Generierte Dateien sollen nicht von Hand geaendert werden.
 
+`sync --check` prueft die Checkout-Struktur, Git-URLs und lokale Aenderungen,
+ohne Dateien anzufassen. `sync` klont fehlende Git-Checkouts und stellt
+vorhandene saubere Checkouts exakt auf den in `git_commit` festgelegten Stand.
+Mehrere Mods eines Modpacks werden dabei als ein gemeinsamer Checkout
+behandelt. Bei lokalen Aenderungen, abweichender Herkunft oder
+widerspruechlichen Manifesten wird vor der ersten Aenderung abgebrochen.
+
 Ein `source = existing` markiert einen aus der Sicherung uebernommenen Mod,
 dessen Herkunft noch inventarisiert werden muss. Erst nach Eintrag von
-`git_url` und `git_commit` ist dieser Checkout reproduzierbar.
+`git_url` und `git_commit` ist dieser Checkout reproduzierbar. `sync` laesst
+solche Checkouts unveraendert und loescht auch keine unbekannten Verzeichnisse.
 
 Produktive Daten sollen nicht innerhalb dieses Repositories liegen. Ihre
 Pfade werden ueber die `.env`-Datei konfiguriert. `SERVICE_UID` und
