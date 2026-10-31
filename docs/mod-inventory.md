@@ -14,11 +14,14 @@ Ein gleicher Name allein reicht nicht zum Eintragen von `source = git`.
 Repository, enthaltene Modnamen und der konkrete Commit muessen zusaetzlich
 gegen die lokale Sicherung geprueft werden.
 
-## Inhaltlich bestaetigte Kandidaten
+## Uebernommene Kandidaten
 
 Bei diesen Kandidaten stimmt der lokale Inhalt mit dem angegebenen Commit
-ueberein. Von ContentDB an `mod.conf` angehaengte Felder wie `release` und
-`author` werden beim Vergleich ignoriert beziehungsweise gesondert bewertet.
+ueberein. Sie wurden als gepinnte Git-Checkouts uebernommen. Die vorherigen
+Verzeichnisse liegen als lokale Rueckfallkopie unter
+`state/mods-backup/confirmed-2026-10-31/`. Von ContentDB an `mod.conf`
+angehaengte Felder wie `release` und `author` wurden beim Vergleich gesondert
+bewertet und gehoeren nicht zum Upstream-Checkout.
 
 | Checkout | Repository | Commit | Befund |
 | --- | --- | --- | --- |
@@ -53,8 +56,7 @@ ContentDB-Kandidaten und benoetigen eine genauere Inhaltspruefung:
 
 ## Naechster Arbeitsschritt
 
-Zuerst die sechs inhaltlich bestaetigten Kandidaten in echte Git-Checkouts
-ueberfuehren und erneut im laufenden Server testen. Danach die eindeutigen
-ContentDB-Namenskandidaten in kleinen Gruppen vergleichen. Bestehende
-Verzeichnisse werden erst ersetzt, wenn Repository und Commit nachweislich zum
-gesicherten Inhalt passen.
+Die uebernommenen Kandidaten erneut im laufenden Server testen. Danach die
+eindeutigen ContentDB-Namenskandidaten in kleinen Gruppen vergleichen.
+Bestehende Verzeichnisse werden erst ersetzt, wenn Repository und Commit
+nachweislich zum gesicherten Inhalt passen.
