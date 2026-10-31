@@ -24,16 +24,38 @@ sein.
 
 ## Ergebnis
 
-- 59 reproduzierbare Git-Checkouts
-- 80 unveraenderte Checkouts mit `source = existing`
+- 74 reproduzierbare Git-Checkouts
+- 65 unveraenderte Checkouts mit `source = existing`
 - Git-Fetch und Synchronisierung ueber HTTPS
 - Git-Push ueber eine separate SSH-`pushurl`
 - vorherige Verzeichnisse der aktuellen Runde unter
   `state/mods-backup/preferred-2026-10-31/`
+- vorherige Verzeichnisse der `minetest-mods`-Runde unter
+  `state/mods-backup/minetest-mods-2026-10-31/`
 - vorherige Verzeichnisse der ersten Runde unter
   `state/mods-backup/confirmed-2026-10-31/`
 
-## In dieser Runde uebernommene Checkouts
+## Aus `minetest-mods` uebernommene Checkouts
+
+| Checkout | Repository | Commit |
+| --- | --- | --- |
+| `anvil` | `https://github.com/minetest-mods/anvil` | `9bc6f63af822269c16db69cc0f8e4710207aa1a7` |
+| `areas` | `https://github.com/minetest-mods/areas` | `0dc1c67fff21142e6f2081a9280a6b63d65b4901` |
+| `digilines` | `https://github.com/minetest-mods/digilines` | `3f6e553b7c7fe7017a96527b9cb26f367cb6f8b7` |
+| `drawers` | `https://github.com/minetest-mods/drawers` | `5c8aa86f481852cc59b678023193135d5ab9963d` |
+| `mesecons` | `https://github.com/minetest-mods/mesecons` | `aca87dbd448637d2dc80e59e909425932acd6c84` |
+| `moreblocks` | `https://github.com/minetest-mods/moreblocks` | `8c3de6c948f07d589fe92c2c96628b843cba28b6` |
+| `moreores` | `https://github.com/minetest-mods/moreores` | `73c8696c82ab43d36560d3818ca105d9773c8461` |
+| `pkarcs` | `https://github.com/minetest-mods/pkarcs` | `f26a3dc2361b4e6e2bd2e5670b5f6cd0f64c9225` |
+| `player_monoids` | `https://github.com/minetest-mods/player_monoids` | `bd082d25dae879fb3fabe4d9b518685b94679275` |
+| `pontoons` | `https://github.com/minetest-mods/pontoons` | `a9fbd4028f5b111d57c41147d460b29fbe27f897` |
+| `spawn_command` | `https://github.com/minetest-mods/spawn_command` | `78af69d4e16067a3b3697160ad9f4df099f0e5f6` |
+| `towercrane` | `https://github.com/minetest-mods/towercrane` | `7106c56a9807c9ec7781ed9460a7c77a2c6754f5` |
+| `unified_inventory` | `https://github.com/minetest-mods/unified_inventory` | `3679debe1404fd04b5a8ef3b585ac18bb5ccc60e` |
+| `unifiedbricks` | `https://github.com/minetest-mods/unifiedbricks` | `b6e70bcb5999d73d934d16a6fb12fc48bd9020fb` |
+| `woodcutting` | `https://github.com/minetest-mods/woodcutting` | `b265a9707a1ea60e0ecc79ab6da808a300ca2dff` |
+
+## Aus der bevorzugten ContentDB-Runde uebernommene Checkouts
 
 | Checkout | Repository | Commit |
 | --- | --- | --- |
