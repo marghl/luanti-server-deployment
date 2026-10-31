@@ -24,10 +24,12 @@ sein.
 
 ## Ergebnis
 
-- 99 reproduzierbare Git-Checkouts
-- 40 unveraenderte Checkouts mit `source = existing`
+- 113 reproduzierbare Git-Checkouts
+- 26 unveraenderte Checkouts mit `source = existing`
 - Git-Fetch und Synchronisierung ueber HTTPS
 - Git-Push ueber eine separate SSH-`pushurl`
+- vorherige Verzeichnisse der zuletzt vorgegebenen aktiven Checkouts unter
+  `state/mods-backup/provided-active-2026-10-31/`
 - vorherige Verzeichnisse der direkt vorgegebenen Repositories unter
   `state/mods-backup/provided-2026-10-31/`
 - vorherige Verzeichnisse der aktuellen Runde unter
@@ -44,6 +46,30 @@ sein.
   `state/mods-backup/confirmed-2026-10-31/`
 
 ## Anhand direkter Hinweise uebernommene Checkouts
+
+| Checkout | Repository | Commit |
+| --- | --- | --- |
+| `christmas` | `https://github.com/Extex101/christmas` | `dc3bfb042053259cc7900d68fda73a8c6d4d86f1` |
+| `moretorches` | `https://github.com/Skandarella/moretorches` | `e1838a98f75e5d5c54d84bbed722e226a2c4e94c` |
+| `mtzip` | `https://github.com/BuckarooBanzay/mtzip` | `1095e0f7aee72d0ce2ec906bec93bc07bb128db0` |
+| `nextgen_bedrock` | `https://github.com/starninjas/nextgen_bedrock` | `13fd95be3bd83408840c4fb6668df79cddfb1345` |
+| `ostereier` | `https://github.com/Ineva-A/ostereier` | `227d4dfec31314820e91ed514acb9fd75ce1904c` |
+| `placeholder` | `https://github.com/BuckarooBanzay/placeholder` | `51735a19e5903b92c3a7d5ee77d264e415627ed2` |
+| `regional_weather` | `https://github.com/t-affeldt/regional_weather` | `e1616762104d1fae38c9974d95d64592cb5d5561` |
+| `steampunk_blimp` | `https://github.com/APercy/steampunk_blimp` | `0e6fb3ff773c9b782fc83bfb3630fd921f8c982a` |
+| `tape_measure` | `https://github.com/OgelGames/tape_measure` | `562fc127742165b116f1fcec995e9c9537073899` |
+| `tinted_glass` | `https://github.com/C-C-Minetest-Server/tinted_glass` | `bd5783f82ee6f0fc0de113199d002d9034ba5cba` |
+| `tubelib2` | `https://github.com/joe7575/tubelib2` | `29edfd69e93d1cbdacdc32897c68d5e30de13d2b` |
+| `vines` | `https://github.com/bas080/vines` | `e41377aa90d091dbae520751165052880b95ce28` |
+| `worldedit` | `https://github.com/Uberi/Minetest-WorldEdit` | `62ffafe3bcb386600c431ef3840d91c3c8f85639` |
+| `xdecor` | `https://codeberg.org/Wuzzy/xdecor-libre` | `43a77535eab1148937e4b2ea1263d2a60700e362` |
+
+`prefab` war bereits auf das angegebene `mt-mods`-Repository gepinnt. Das
+aktive `wrench` ist Bestandteil des lokalen `technic_plus`-Checkouts und
+wurde deshalb nicht durch das eigenstaendige Repository `mt-mods/wrench`
+ersetzt.
+
+## Zuvor anhand direkter Hinweise uebernommene Checkouts
 
 | Checkout | Repository | Commit |
 | --- | --- | --- |
