@@ -24,10 +24,12 @@ sein.
 
 ## Ergebnis
 
-- 81 reproduzierbare Git-Checkouts
-- 58 unveraenderte Checkouts mit `source = existing`
+- 99 reproduzierbare Git-Checkouts
+- 40 unveraenderte Checkouts mit `source = existing`
 - Git-Fetch und Synchronisierung ueber HTTPS
 - Git-Push ueber eine separate SSH-`pushurl`
+- vorherige Verzeichnisse der direkt vorgegebenen Repositories unter
+  `state/mods-backup/provided-2026-10-31/`
 - vorherige Verzeichnisse der aktuellen Runde unter
   `state/mods-backup/preferred-2026-10-31/`
 - vorherige Verzeichnisse der `minetest-mods`-Runde unter
@@ -42,6 +44,34 @@ sein.
   `state/mods-backup/confirmed-2026-10-31/`
 
 ## Anhand direkter Hinweise uebernommene Checkouts
+
+| Checkout | Repository | Commit |
+| --- | --- | --- |
+| `airutils` | `https://github.com/APercy/airutils` | `5c21c9249a5de3e976fb2720d34b04f7a969233d` |
+| `blockexchange` | `https://github.com/blockexchange/blockexchange` | `9820672d5d6e32ac9efbfb87479ca1d0503d7345` |
+| `bucket_wooden` | `https://gitlab.com/h2mm/wooden_bucket` | `0203ec94fc1e36a86d4dbb5e5b64ffeb6882db57` |
+| `climate_api` | `https://github.com/t-affeldt/climate_api` | `85e4553f2aa0a98b093141e29576e347f9b13e76` |
+| `composting` | `https://github.com/sfence/composting` | `91a4b0d318a0db6676b969732791887ea366b7c1` |
+| `cottages` | `https://github.com/C-C-Minetest-Server/cottages` | `3fd1977b6d72f25633d7773f73cc7f2e3aed433e` |
+| `darkage` | `https://github.com/adrido/darkage` | `494f81c37593ec21f803bbcced70dcdc3e95a045` |
+| `dialog_redo` | `https://github.com/MT-Companion/dialog_redo` | `63690ceef042a6ca3d262666a10ceb562b5c3f4f` |
+| `digicontrol` | `https://github.com/OgelGames/digicontrol` | `85c71f9f6cfa2fcb9b16c73d3d5954e1872bb391` |
+| `doc` | `https://codeberg.org/Wuzzy/minetest_doc` | `a713574f227f17e7f8b4be569d969031766d24fc` |
+| `elevator` | `https://github.com/tigris-mt/elevator` | `9d3c23fad754409b33305dacd40deb0a6ad43aec` |
+| `epic` | `https://github.com/buckaroobanzay/epic` | `8c207629fdc6234a57e7d66272caa373c6b8b57e` |
+| `fakelib` | `https://github.com/OgelGames/fakelib` | `562dc359f00227daf0ee56dbba9c36a240c59d4c` |
+| `hunger_ng` | `https://git.0x7be.net/dirk/hunger_ng` | `7b2cfc0fb1e0cdea5e6e9e48f98829b8d623ded4` |
+| `leafstride` | `https://github.com/EmptyStar/leafstride` | `5db4b4a60b6f91522e1a0b19709a436e37641f98` |
+| `luanti_utils` | `https://github.com/bas080/luanti_utils` | `bc4f2a885f413b0f76b71b80274507e96cb40772` |
+| `minecart` | `https://github.com/joe7575/minecart` | `3fb88ace3d3cb170f2624f01eabb7043163bb262` |
+| `moretools` | `https://github.com/sfence/moretools` | `ade5fc43559ac7fd0ec1439c19347e8cb58706da` |
+
+Die lokalen Inhalte dieser Checkouts wurden vor der Umstellung mit den
+angegebenen Commits verglichen. Bei `digicontrol` und `fakelib` enthaelt das
+Repository lediglich zusaetzliche Entwicklungsdateien, die im installierten
+ContentDB-Paket fehlen.
+
+## Weitere anhand direkter Hinweise uebernommene Checkouts
 
 | Checkout | Repository | Commit |
 | --- | --- | --- |
@@ -133,7 +163,6 @@ Repository ist nicht belastbar erreichbar. Sie bleiben deshalb auf
 | Checkout | Grund |
 | --- | --- |
 | `animalworld` | vier lokale Orang-Utan-Sounds fehlen in allen Commits des `mt-mods`-Repositories |
-| `cottages` | lokaler Stand und aktuelles `Sokomine`-Repository besitzen deutlich verschiedene Code- und Verzeichnisstrukturen |
 | `livingcavesmobs` | lokale Kollisionsbox in `moth.lua` weicht vom gesamten erreichbaren Repositoryverlauf ab |
 | `livingjungle` | mehrere lokale Code-, Textur- und Uebersetzungsdateien weichen ab |
 | `marinara` | erreichbares `TenPlus1`-Repository stimmt in 69 Dateien nicht mit dem lokalen Stand ueberein |
