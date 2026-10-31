@@ -16,17 +16,15 @@ des Luanti-Servers mit Mapserver, Prometheus, Grafana und Reverse Proxy.
 - `compose.local.yaml`: lokale Ports, Weltkopie und Entwicklungsoptionen
 - `compose.production.yaml`: produktive Restart-Regeln und Datenpfade
 
-Die Luanti-Konfiguration ist nach Kontext getrennt und vollstaendig
-versioniert:
+Die Luanti-Konfiguration wird aus `config/base/` und den einzelnen
+Modkonfigurationen unter `config/mods/` erzeugt. Lokal und in Produktion
+werden dieselben Dateien aus `generated/` eingebunden. Unterschiede zwischen
+Test und Produktion entstehen damit ausschliesslich durch den verwendeten
+Git-Branch und lokale Geheimnisse beziehungsweise Laufzeitpfade.
 
-- `config/luanti/server.conf.test` und `config/luanti/world.mt.test`
-- `config/luanti/server.conf.produktiv` und
-  `config/luanti/world.mt.produktiv`
-
-Das jeweilige Compose-Override bindet die passenden Dateien als
-`server.conf` und `world.mt` ein. Beim Start werden danach die unveraendert
-lokalen Dateien `secrets/server.conf`, `secrets/mapserver.conf` und
-`secrets/lorebridge.conf` an die Serverkonfiguration angehaengt.
+Beim Start werden die nicht versionierten Dateien `secrets/server.conf`,
+`secrets/mapserver.conf` und `secrets/lorebridge.conf` an die erzeugte
+Serverkonfiguration angehaengt.
 
 Der erste Migrationsschritt startet Luanti 5.17.0 mit der wiederhergestellten
 SQLite-Welt. Spiel und Mods werden schreibgeschuetzt eingebunden. Die Welt
@@ -67,6 +65,7 @@ Die produktive Compose-Konfiguration wird explizit ohne lokale Overrides
 gestartet:
 
 ```bash
+./scripts/modconfig.sh generate
 docker compose -f compose.yaml -f compose.production.yaml up -d
 ```
 
@@ -83,7 +82,6 @@ cp .env.example .env
 
 - `config/`: versionierbare Dienstkonfiguration
 - `images/`: selbst gebaute Images
-- `mods/`: Mod-Quellen und festgelegte Versionen
 - `scripts/`: Betriebs- und Testbefehle
 - `tests/`: Integrations- und Wiederherstellungstests
 - `state/`: lokale Laufzeitdaten; wird nicht versioniert
@@ -107,7 +105,8 @@ Abhaengigkeiten und - soweit bereits bekannt - Git-URL und Commit fest.
 Standardwerte auskommentiert. Nur nicht auskommentierte Werte werden aktiv.
 
 Die Dateien `generated/server.conf` und `generated/world.mt` werden daraus
-erzeugt und lokal in den Luanti-Container eingebunden:
+erzeugt und sowohl lokal als auch produktiv in den Luanti-Container
+eingebunden:
 
 ```bash
 ./scripts/modconfig.sh generate
