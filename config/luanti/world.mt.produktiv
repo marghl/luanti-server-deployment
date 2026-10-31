@@ -7,6 +7,7 @@ backend = sqlite3
 gameid = minetest
 world_name = marghl
 server_announce = true
+load_mod_glass_stained = true
 load_mod_worldedit_shortcommands = mods/worldedit/worldedit_shortcommands
 load_mod_worldedit_gui = mods/worldedit/worldedit_gui
 load_mod_worldedit_commands = mods/worldedit/worldedit_commands
