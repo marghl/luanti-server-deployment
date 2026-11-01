@@ -27,6 +27,12 @@ services:
   grafana:
     restart: unless-stopped
 
+  project-metrics:
+    restart: unless-stopped
+
+  ofelia:
+    restart: unless-stopped
+
   mediawiki:
     environment:
       MEDIAWIKI_SERVER: https://wiki.marghl.de

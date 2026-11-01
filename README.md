@@ -41,6 +41,9 @@ Die Luanti-Monitoring-Mod sendet Metriken an Pushgateway 1.11.4. Prometheus
 3.15.1 speichert diese sowie die Mapserver-Metriken; Grafana 13.2.4 verwendet
 Prometheus als automatisch eingerichtete Standard-Datenquelle. Caddy stellt
 Mapserver, MediaWiki und Grafana ueber einen gemeinsamen Reverse Proxy bereit.
+Ofelia 1.0.2 fuehrt geplante Containeraufgaben aus. Die erste Aufgabe erzeugt
+beim Scheduler-Start und taeglich um 03:15 Uhr eine Projektinventur mit
+Modquellen, Aktivierungsstatus und deutschem Uebersetzungsstand.
 
 ## Lokaler Aufruf
 
@@ -72,6 +75,19 @@ produktiven `.env` muss `GRAFANA_ADMIN_PASSWORD` vor dem ersten Start auf ein
 langes, zufaelliges Passwort gesetzt werden. Ein bereits initialisiertes
 Grafana uebernimmt eine spaetere Aenderung dieser Variable nicht automatisch.
 
+Die Projektinventur kann ausserhalb des Zeitplans manuell ausgefuehrt werden:
+
+```bash
+docker compose -f compose.yaml -f compose.local.yaml \
+  exec project-metrics python3 /app/project_metrics.py
+```
+
+Ofelia benoetigt fuer geplante `exec`-Jobs Zugriff auf den Docker-Socket. Der
+Scheduler wird deshalb auf Container des aktuellen Compose-Projekts gefiltert
+und nicht ueber das Frontend-Netz oder Caddy veroeffentlicht. Der Socketzugriff
+ist trotzdem eine administrative Berechtigung und darf nur fuer kontrollierte
+Images und Jobdefinitionen verwendet werden.
+
 Die produktive Compose-Konfiguration wird explizit ohne lokale Overrides
 gestartet:
 
@@ -97,6 +113,23 @@ cp .env.example .env
 - `tests/`: Integrations- und Wiederherstellungstests
 - `state/`: lokale Laufzeitdaten; wird nicht versioniert
 - `secrets/`: lokale Geheimnisse; wird nicht versioniert
+
+`images/project-metrics/project_metrics.py` liest die Modmanifeste und
+Locale-Dateien schreibgeschuetzt. Es sendet unter dem Pushgateway-Job
+`project_inventory` unter anderem folgende Metriken:
+
+- `luanti_project_mods`
+- `luanti_project_mods_by_enabled`
+- `luanti_project_mods_by_source`
+- `luanti_project_checkouts_by_source`
+- `luanti_project_translation_mods`
+- `luanti_project_translation_strings`
+- `luanti_project_mod_translation_ratio`
+
+Eine Mod gilt als vollstaendig uebersetzt, wenn alle in ihrer PO/POT- oder
+TR-Vorlage erkannten Zeichenketten in der deutschen Locale-Datei belegt sind.
+Fuzzy-PO-Eintraege gelten als nicht uebersetzt. Mods ohne erkennbare
+Uebersetzungsvorlage werden als `not_translatable` ausgewiesen.
 
 ## Modkonfiguration
 

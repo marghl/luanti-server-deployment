@@ -35,6 +35,12 @@ services:
       - "${GRAFANA_PORT:-3000}:3000/tcp"
     restart: "no"
 
+  project-metrics:
+    restart: "no"
+
+  ofelia:
+    restart: "no"
+
   mediawiki:
     ports:
       - "${MEDIAWIKI_PORT:-8082}:80/tcp"
