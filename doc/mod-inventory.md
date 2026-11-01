@@ -1,6 +1,6 @@
 # Mod-Inventar
 
-Stand: 2026-10-31
+Stand: 2026-11-01
 
 ## Regeln
 
@@ -24,7 +24,7 @@ sein.
 
 ## Ergebnis
 
-- 115 reproduzierbare Git-Checkouts
+- 116 reproduzierbare Git-Checkouts
 - 25 unveraenderte Checkouts mit `source = existing`
 - Git-Fetch und Synchronisierung ueber HTTPS
 - Git-Push ueber eine separate SSH-`pushurl`
@@ -180,6 +180,7 @@ und `tubetool`. `replacer` war bereits zuvor als eigener Checkout gepinnt.
 | `lighting_monoid` | `https://github.com/t-affeldt/lighting_monoids` | `7ac833bb19127921fa9a8c6805b954a3581815a9` |
 | `pipeworks` | `https://github.com/mt-mods/pipeworks` | `5dfd572eacee4c3c1ed8b827f4a67c46b022b242` |
 | `lore` | `https://github.com/marghl/lore.git` | `93b8c9d79c1a55403d33b3dd9481e13477252fde` |
+| `professions` | `https://github.com/marghl/professions.git` | `96addcfdb35a17d3512e42ee8feaf1e22816492c` |
 | `world_layers` | `https://github.com/marghl/world_layers.git` | `9f9e2aa5f2ff4a7b2cdc98f9e4b38fe5a2292fd9` |
 
 ## Bevorzugte Quellen, bewusst nicht ersetzt

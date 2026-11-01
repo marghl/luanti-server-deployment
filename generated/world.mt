@@ -256,6 +256,7 @@ load_mod_player_monoids = mods/player_monoids
 load_mod_pontoons = mods/pontoons
 load_mod_postool = mods/postool
 load_mod_prefab = mods/prefab
+load_mod_professions = mods/professions
 load_mod_promise = mods/promise
 load_mod_protector = mods/protector
 load_mod_regional_weather = mods/regional_weather
