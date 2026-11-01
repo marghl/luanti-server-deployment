@@ -114,7 +114,7 @@ services:
     stop_grace_period: 30s
 
   ofelia:
-    image: ${OFELIA_IMAGE:-ghcr.io/netresearch/ofelia:v1.0.2}
+    image: ${OFELIA_IMAGE:-ghcr.io/netresearch/ofelia:0.28.1}
     command:
       - daemon
       - --docker
