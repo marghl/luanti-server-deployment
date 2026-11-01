@@ -117,7 +117,6 @@ services:
     image: ${OFELIA_IMAGE:-ghcr.io/netresearch/ofelia:0.28.1}
     command:
       - daemon
-      - --docker
       - --docker-filter
       - label=com.docker.compose.project=${COMPOSE_PROJECT_NAME:-marghl-luanti}
     depends_on:
