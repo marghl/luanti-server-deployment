@@ -164,6 +164,16 @@ eingebunden:
 alle Container mit der Compose-Option `--force-recreate` neu.
 Generierte Dateien sollen nicht von Hand geaendert werden.
 
+Ofelia benoetigt lokal den rootless Podman-API-Socket. Dieser wird einmalig mit
+
+```bash
+systemctl --user enable --now podman.socket
+```
+
+aktiviert. Der Pfad kann bei Bedarf mit `PODMAN_SOCKET_PATH` in `.env`
+ueberschrieben werden. Produktiv verwendet Ofelia weiterhin den Docker-Socket
+`/var/run/docker.sock`.
+
 `sync --check` prueft die Checkout-Struktur, Git-URLs und lokale Aenderungen,
 ohne Dateien anzufassen. `sync` klont fehlende Git-Checkouts und stellt
 vorhandene saubere Checkouts exakt auf den in `git_commit` festgelegten Stand.
