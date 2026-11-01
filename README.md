@@ -160,7 +160,8 @@ eingebunden:
 ./scripts/modconfig.sh sync
 ```
 
-`./scripts/start.sh` erzeugt die Konfiguration vor jedem Start erneut.
+`./scripts/start.sh` erzeugt die Konfiguration vor jedem Start erneut und erstellt
+alle Container mit der Compose-Option `--force-recreate` neu.
 Generierte Dateien sollen nicht von Hand geaendert werden.
 
 `sync --check` prueft die Checkout-Struktur, Git-URLs und lokale Aenderungen,
