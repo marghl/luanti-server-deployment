@@ -37,8 +37,10 @@ Konfiguration orientiert sich an der produktiven Instanz, verwendet aber ein
 eigenes Geheimnis und getrennte Laufzeitdaten unter `state/mapserver`.
 MediaWiki 1.43.11 wird aus dem lokal gepinnten Checkout unter `../mediawiki`
 (Tag `1.43.11`, Commit `8c65f3e1545`) gebaut und verwendet MariaDB 11.4.13.
-Prometheus und Grafana werden anschliessend ergaenzt. Caddy stellt Mapserver
-und MediaWiki bereits ueber einen gemeinsamen Reverse Proxy bereit.
+Die Luanti-Monitoring-Mod sendet Metriken an Pushgateway 1.11.4. Prometheus
+3.15.1 speichert diese sowie die Mapserver-Metriken; Grafana 13.2.4 verwendet
+Prometheus als automatisch eingerichtete Standard-Datenquelle. Caddy stellt
+Mapserver, MediaWiki und Grafana ueber einen gemeinsamen Reverse Proxy bereit.
 
 ## Lokaler Aufruf
 
@@ -50,16 +52,25 @@ cp .env.example .env
 ```
 
 Luanti ist lokal auf UDP-Port `30000` erreichbar. Ueber den Reverse Proxy sind
-Mapserver unter `http://map.localhost:8080` und MediaWiki unter
-`http://wiki.localhost:8080` erreichbar. Fuer die direkte Fehlersuche bleiben
-Mapserver unter `http://localhost:8081` und MediaWiki unter
-`http://localhost:8082` erreichbar. Die Instanz wird nicht beim
-oeffentlichen Serververzeichnis angemeldet (`server_announce = false`).
+Mapserver unter `http://map.localhost:8080`, MediaWiki unter
+`http://wiki.localhost:8080` und Grafana unter
+`http://grafana.localhost:8080` erreichbar. Fuer die direkte Fehlersuche
+bleiben Mapserver unter `http://localhost:8081`, MediaWiki unter
+`http://localhost:8082`, Prometheus unter `http://localhost:9090`, Pushgateway
+unter `http://localhost:9091` und Grafana unter `http://localhost:3000`
+erreichbar. Die Instanz wird nicht beim oeffentlichen Serververzeichnis
+angemeldet (`server_announce = false`).
 
 In Produktion setzt `compose.production.yaml` die Adressen auf
-`map.marghl.de` und `wiki.marghl.de`. Caddy veroeffentlicht dort TCP-Port 80
-und 443 und verwaltet die TLS-Zertifikate automatisch; Mapserver und MediaWiki
-besitzen keine eigenen Host-Ports.
+`map.marghl.de`, `wiki.marghl.de` und `grafana.marghl.de`. Caddy
+veroeffentlicht dort TCP-Port 80 und 443 und verwaltet die TLS-Zertifikate
+automatisch; Mapserver, MediaWiki, Prometheus, Pushgateway und Grafana besitzen
+keine eigenen produktiven Host-Ports.
+
+Lokal lauten die initialen Grafana-Zugangsdaten `admin` / `admin`. In der
+produktiven `.env` muss `GRAFANA_ADMIN_PASSWORD` vor dem ersten Start auf ein
+langes, zufaelliges Passwort gesetzt werden. Ein bereits initialisiertes
+Grafana uebernimmt eine spaetere Aenderung dieser Variable nicht automatisch.
 
 Die produktive Compose-Konfiguration wird explizit ohne lokale Overrides
 gestartet:
@@ -138,6 +149,9 @@ Produktive Daten sollen nicht innerhalb dieses Repositories liegen. Ihre
 Pfade werden ueber die `.env`-Datei konfiguriert. `SERVICE_UID` und
 `SERVICE_GID` muessen der numerischen UID/GID des produktiven Dienstbenutzers
 entsprechen, damit Luanti und Mapserver auf die Bind-Mounts zugreifen koennen.
+Prometheus und Grafana verwenden lokal benannte Volumes. Produktion kann mit
+`PROMETHEUS_DATA_PATH` und `GRAFANA_DATA_PATH` stattdessen vorbereitete
+absolute Datenverzeichnisse verwenden.
 
 Vor dem Mapserver-Start wird die lokale, ignorierte Konfiguration einmalig aus
 der Vorlage erzeugt und ihr Platzhalterschluessel ersetzt:

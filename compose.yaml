@@ -44,6 +44,44 @@ services:
       - backend
     stop_grace_period: 30s
 
+  pushgateway:
+    image: ${PUSHGATEWAY_IMAGE:-docker.io/prom/pushgateway:v1.11.4}
+    networks:
+      - backend
+    stop_grace_period: 30s
+
+  prometheus:
+    image: ${PROMETHEUS_IMAGE:-docker.io/prom/prometheus:v3.15.1}
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=${PROMETHEUS_RETENTION:-30d}
+    depends_on:
+      - pushgateway
+      - mapserver
+    volumes:
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ${PROMETHEUS_DATA_PATH:-prometheus-data}:/prometheus
+    networks:
+      - backend
+    stop_grace_period: 1m
+
+  grafana:
+    image: ${GRAFANA_IMAGE:-docker.io/grafana/grafana:13.2.4}
+    depends_on:
+      - prometheus
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - ./config/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ${GRAFANA_DATA_PATH:-grafana-data}:/var/lib/grafana
+    networks:
+      - frontend
+      - backend
+    stop_grace_period: 30s
+
   mediawiki-db:
     image: ${MEDIAWIKI_DB_IMAGE:-docker.io/library/mariadb:11.4.13}
     env_file:
@@ -84,6 +122,7 @@ services:
     environment:
       MAPSERVER_SITE: ${MAPSERVER_SITE:-http://map.localhost}
       WIKI_SITE: ${WIKI_SITE:-http://wiki.localhost}
+      GRAFANA_SITE: ${GRAFANA_SITE:-http://grafana.localhost}
     volumes:
       - ./config/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-data:/data
@@ -101,3 +140,5 @@ volumes:
   mediawiki-images:
   caddy-data:
   caddy-config:
+  prometheus-data:
+  grafana-data:

@@ -20,6 +20,21 @@ services:
       - "${MAPSERVER_PORT:-8081}:8080/tcp"
     restart: "no"
 
+  pushgateway:
+    ports:
+      - "${PUSHGATEWAY_PORT:-9091}:9091/tcp"
+    restart: "no"
+
+  prometheus:
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090/tcp"
+    restart: "no"
+
+  grafana:
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000/tcp"
+    restart: "no"
+
   mediawiki:
     ports:
       - "${MEDIAWIKI_PORT:-8082}:80/tcp"
