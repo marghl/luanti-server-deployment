@@ -108,6 +108,7 @@ load_mod_extranodes = mods/technic/extranodes
 load_mod_factory_bridges = mods/factory_bridges
 load_mod_fake_fire = mods/homedecor_modpack/fake_fire
 load_mod_fakelib = mods/fakelib
+load_mod_fancy_vend = mods/fancy_vend
 load_mod_farming = mods/farming
 load_mod_font_api = mods/display_modpack/font_api
 load_mod_font_lib = false
