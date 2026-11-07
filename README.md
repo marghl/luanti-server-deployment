@@ -37,8 +37,13 @@ Konfiguration orientiert sich an der produktiven Instanz, verwendet aber ein
 eigenes Geheimnis und getrennte Laufzeitdaten unter `state/mapserver`.
 MediaWiki 1.43.11 wird aus dem lokal gepinnten Checkout unter `../mediawiki`
 (Tag `1.43.11`, Commit `8c65f3e1545`) gebaut und verwendet MariaDB 11.4.13.
-Prometheus und Grafana werden anschliessend ergaenzt. Caddy stellt Mapserver
-und MediaWiki bereits ueber einen gemeinsamen Reverse Proxy bereit.
+Die Luanti-Monitoring-Mod sendet Metriken an Pushgateway 1.11.4. Prometheus
+3.15.1 speichert diese sowie die Mapserver-Metriken; Grafana 13.2.4 verwendet
+Prometheus als automatisch eingerichtete Standard-Datenquelle. Caddy stellt
+Mapserver, MediaWiki und Grafana ueber einen gemeinsamen Reverse Proxy bereit.
+Ofelia 1.0.2 fuehrt geplante Containeraufgaben aus. Die erste Aufgabe erzeugt
+beim Scheduler-Start und taeglich um 03:15 Uhr eine Projektinventur mit
+Modquellen, Aktivierungsstatus und deutschem Uebersetzungsstand.
 
 ## Lokaler Aufruf
 
@@ -50,16 +55,38 @@ cp .env.example .env
 ```
 
 Luanti ist lokal auf UDP-Port `30000` erreichbar. Ueber den Reverse Proxy sind
-Mapserver unter `http://map.localhost:8080` und MediaWiki unter
-`http://wiki.localhost:8080` erreichbar. Fuer die direkte Fehlersuche bleiben
-Mapserver unter `http://localhost:8081` und MediaWiki unter
-`http://localhost:8082` erreichbar. Die Instanz wird nicht beim
-oeffentlichen Serververzeichnis angemeldet (`server_announce = false`).
+Mapserver unter `http://map.localhost:8080`, MediaWiki unter
+`http://wiki.localhost:8080` und Grafana unter
+`http://grafana.localhost:8080` erreichbar. Fuer die direkte Fehlersuche
+bleiben Mapserver unter `http://localhost:8081`, MediaWiki unter
+`http://localhost:8082`, Prometheus unter `http://localhost:9090`, Pushgateway
+unter `http://localhost:9091` und Grafana unter `http://localhost:3000`
+erreichbar. Die Instanz wird nicht beim oeffentlichen Serververzeichnis
+angemeldet (`server_announce = false`).
 
 In Produktion setzt `compose.production.yaml` die Adressen auf
-`map.marghl.de` und `wiki.marghl.de`. Caddy veroeffentlicht dort TCP-Port 80
-und 443 und verwaltet die TLS-Zertifikate automatisch; Mapserver und MediaWiki
-besitzen keine eigenen Host-Ports.
+`map.marghl.de`, `wiki.marghl.de` und `grafana.marghl.de`. Caddy
+veroeffentlicht dort TCP-Port 80 und 443 und verwaltet die TLS-Zertifikate
+automatisch; Mapserver, MediaWiki, Prometheus, Pushgateway und Grafana besitzen
+keine eigenen produktiven Host-Ports.
+
+Lokal lauten die initialen Grafana-Zugangsdaten `admin` / `admin`. In der
+produktiven `.env` muss `GRAFANA_ADMIN_PASSWORD` vor dem ersten Start auf ein
+langes, zufaelliges Passwort gesetzt werden. Ein bereits initialisiertes
+Grafana uebernimmt eine spaetere Aenderung dieser Variable nicht automatisch.
+
+Die Projektinventur kann ausserhalb des Zeitplans manuell ausgefuehrt werden:
+
+```bash
+docker compose -f compose.yaml -f compose.local.yaml \
+  exec project-metrics python3 /app/project_metrics.py
+```
+
+Ofelia benoetigt fuer geplante `exec`-Jobs Zugriff auf den Docker-Socket. Der
+Scheduler wird deshalb auf Container des aktuellen Compose-Projekts gefiltert
+und nicht ueber das Frontend-Netz oder Caddy veroeffentlicht. Der Socketzugriff
+ist trotzdem eine administrative Berechtigung und darf nur fuer kontrollierte
+Images und Jobdefinitionen verwendet werden.
 
 Die produktive Compose-Konfiguration wird explizit ohne lokale Overrides
 gestartet:
@@ -86,6 +113,23 @@ cp .env.example .env
 - `tests/`: Integrations- und Wiederherstellungstests
 - `state/`: lokale Laufzeitdaten; wird nicht versioniert
 - `secrets/`: lokale Geheimnisse; wird nicht versioniert
+
+`images/project-metrics/project_metrics.py` liest die Modmanifeste und
+Locale-Dateien schreibgeschuetzt. Es sendet unter dem Pushgateway-Job
+`project_inventory` unter anderem folgende Metriken:
+
+- `luanti_project_mods`
+- `luanti_project_mods_by_enabled`
+- `luanti_project_mods_by_source`
+- `luanti_project_checkouts_by_source`
+- `luanti_project_translation_mods`
+- `luanti_project_translation_strings`
+- `luanti_project_mod_translation_ratio`
+
+Eine Mod gilt als vollstaendig uebersetzt, wenn alle in ihrer PO/POT- oder
+TR-Vorlage erkannten Zeichenketten in der deutschen Locale-Datei belegt sind.
+Fuzzy-PO-Eintraege gelten als nicht uebersetzt. Mods ohne erkennbare
+Uebersetzungsvorlage werden als `not_translatable` ausgewiesen.
 
 ## Modkonfiguration
 
@@ -116,8 +160,19 @@ eingebunden:
 ./scripts/modconfig.sh sync
 ```
 
-`./scripts/start.sh` erzeugt die Konfiguration vor jedem Start erneut.
+`./scripts/start.sh` erzeugt die Konfiguration vor jedem Start erneut und erstellt
+alle Container mit der Compose-Option `--force-recreate` neu.
 Generierte Dateien sollen nicht von Hand geaendert werden.
+
+Ofelia benoetigt lokal den rootless Podman-API-Socket. Dieser wird einmalig mit
+
+```bash
+systemctl --user enable --now podman.socket
+```
+
+aktiviert. Der Pfad kann bei Bedarf mit `PODMAN_SOCKET_PATH` in `.env`
+ueberschrieben werden. Produktiv verwendet Ofelia weiterhin den Docker-Socket
+`/var/run/docker.sock`.
 
 `sync --check` prueft die Checkout-Struktur, Git-URLs und lokale Aenderungen,
 ohne Dateien anzufassen. `sync` klont fehlende Git-Checkouts und stellt
@@ -138,6 +193,9 @@ Produktive Daten sollen nicht innerhalb dieses Repositories liegen. Ihre
 Pfade werden ueber die `.env`-Datei konfiguriert. `SERVICE_UID` und
 `SERVICE_GID` muessen der numerischen UID/GID des produktiven Dienstbenutzers
 entsprechen, damit Luanti und Mapserver auf die Bind-Mounts zugreifen koennen.
+Prometheus und Grafana verwenden lokal benannte Volumes. Produktion kann mit
+`PROMETHEUS_DATA_PATH` und `GRAFANA_DATA_PATH` stattdessen vorbereitete
+absolute Datenverzeichnisse verwenden.
 
 Vor dem Mapserver-Start wird die lokale, ignorierte Konfiguration einmalig aus
 der Vorlage erzeugt und ihr Platzhalterschluessel ersetzt:

@@ -6,6 +6,10 @@
 	reverse_proxy mediawiki:80
 }
 
+{$GRAFANA_SITE:http://grafana.localhost} {
+	reverse_proxy grafana:3000
+}
+
 :80 {
 	respond /health "ok" 200
 }

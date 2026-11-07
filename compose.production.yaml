@@ -18,6 +18,21 @@ services:
     user: "${SERVICE_UID:-109}:${SERVICE_GID:-111}"
     restart: unless-stopped
 
+  pushgateway:
+    restart: unless-stopped
+
+  prometheus:
+    restart: unless-stopped
+
+  grafana:
+    restart: unless-stopped
+
+  project-metrics:
+    restart: unless-stopped
+
+  ofelia:
+    restart: unless-stopped
+
   mediawiki:
     environment:
       MEDIAWIKI_SERVER: https://wiki.marghl.de
@@ -30,6 +45,7 @@ services:
     environment:
       MAPSERVER_SITE: map.marghl.de
       WIKI_SITE: wiki.marghl.de
+      GRAFANA_SITE: grafana.marghl.de
     ports:
       - "80:80/tcp"
       - "443:443/tcp"
