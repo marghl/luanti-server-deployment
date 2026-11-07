@@ -284,6 +284,7 @@ load_mod_technic_cnc = mods/technic/technic_cnc
 load_mod_technic_worldgen = mods/technic/technic_worldgen
 load_mod_tinted_glass = mods/tinted_glass
 load_mod_towercrane = mods/towercrane
+load_mod_trickster = mods/trickster
 load_mod_tronwrench = false
 load_mod_tubelib2 = mods/tubelib2
 load_mod_tubetool = mods/metatool/tubetool
