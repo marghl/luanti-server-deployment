@@ -49,7 +49,6 @@ sein.
 
 | Checkout | Repository | Commit |
 | --- | --- | --- |
-| `christmas` | `https://github.com/Extex101/christmas` | `dc3bfb042053259cc7900d68fda73a8c6d4d86f1` |
 | `moretorches` | `https://github.com/Skandarella/moretorches` | `e1838a98f75e5d5c54d84bbed722e226a2c4e94c` |
 | `mtzip` | `https://github.com/BuckarooBanzay/mtzip` | `a94dfcc3de5456379ff1af5426336ff65a0d3e99` |
 | `nextgen_bedrock` | `https://github.com/starninjas/nextgen_bedrock` | `13fd95be3bd83408840c4fb6668df79cddfb1345` |

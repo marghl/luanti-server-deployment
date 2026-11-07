@@ -72,7 +72,6 @@ load_mod_building_sign = false
 load_mod_cartographer = false
 load_mod_cartographer_minetest_game = false
 load_mod_cblocks = false
-load_mod_christmas = mods/christmas
 load_mod_church_altar = false
 load_mod_church_bell = false
 load_mod_church_candles = false
