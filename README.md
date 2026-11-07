@@ -177,9 +177,9 @@ ueberschrieben werden. Produktiv verwendet Ofelia weiterhin den Docker-Socket
 `sync --check` prueft die Checkout-Struktur, Git-URLs und lokale Aenderungen,
 ohne Dateien anzufassen. `sync` klont fehlende Git-Checkouts und stellt
 vorhandene saubere Checkouts exakt auf den in `git_commit` festgelegten Stand.
-Zum Abrufen wird die HTTPS-URL aus dem Manifest verwendet. Jeder von `sync`
-verwaltete Checkout erhaelt zusaetzlich eine SSH-`pushurl`, sodass ein
-manuelles `git push` ueber SSH laeuft.
+Zum Abrufen wird die HTTPS-URL aus dem Manifest verwendet. Eine Push-URL wird
+weder vorausgesetzt noch eingerichtet, da das Deployment nur lesend auf die
+Mod-Repositories zugreift.
 Mehrere Mods eines Modpacks werden dabei als ein gemeinsamer Checkout
 behandelt. Bei lokalen Aenderungen, abweichender Herkunft oder
 widerspruechlichen Manifesten wird vor der ersten Aenderung abgebrochen.

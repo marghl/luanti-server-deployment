@@ -132,13 +132,6 @@ def git(checkout: Path, *arguments: str, capture: bool = False) -> str:
     return completed.stdout.strip() if capture else ""
 
 
-def push_url(fetch_url: str) -> str:
-    match = re.fullmatch(r"https://([^/]+)/(.+)", fetch_url)
-    if not match:
-        fail(f"Aus {fetch_url!r} kann keine SSH-Push-URL erzeugt werden")
-    return f"git@{match.group(1)}:{match.group(2)}"
-
-
 def sync(check_only: bool = False) -> None:
     manifests = load_manifests()
     groups = checkout_groups(manifests)
@@ -167,12 +160,6 @@ def sync(check_only: bool = False) -> None:
         origin = git(target, "remote", "get-url", "origin", capture=True)
         if origin != url:
             errors.append(f"{checkout}: origin ist {origin!r}, erwartet wird {url!r}")
-        origin_push = git(target, "remote", "get-url", "--push", "origin", capture=True)
-        if origin_push != push_url(url):
-            errors.append(
-                f"{checkout}: pushurl ist {origin_push!r}, "
-                f"erwartet wird {push_url(url)!r}"
-            )
     if errors:
         fail("\n".join(errors))
 
@@ -198,7 +185,6 @@ def sync(check_only: bool = False) -> None:
                 ["git", "clone", "--quiet", "--no-checkout", url, str(temporary)],
                 check=True,
             )
-            git(temporary, "remote", "set-url", "--push", "origin", push_url(url))
             git(temporary, "checkout", "--quiet", "--detach", commit)
             os.replace(temporary, target)
         except (FileNotFoundError, subprocess.CalledProcessError) as error:
