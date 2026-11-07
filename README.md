@@ -16,11 +16,10 @@ des Luanti-Servers mit Mapserver, Prometheus, Grafana und Reverse Proxy.
 - `compose.local.yaml`: lokale Ports, Weltkopie und Entwicklungsoptionen
 - `compose.production.yaml`: produktive Restart-Regeln und Datenpfade
 
-Die Luanti-Konfiguration wird aus `config/base/` und den einzelnen
-Modkonfigurationen unter `config/mods/` erzeugt. Lokal und in Produktion
-werden dieselben Dateien aus `generated/` eingebunden. Unterschiede zwischen
-Test und Produktion entstehen damit ausschliesslich durch den verwendeten
-Git-Branch und lokale Geheimnisse beziehungsweise Laufzeitpfade.
+Die Luanti-Konfiguration wird aus `config/server/common.conf`, dem ausdruecklich
+gewaehlten Profil unter `config/server/` und den einzelnen Modkonfigurationen
+unter `config/mods/` erzeugt. Lokal und in Produktion werden getrennte Dateien
+unter `generated/local/` beziehungsweise `generated/production/` eingebunden.
 
 Beim Start werden die nicht versionierten Dateien `secrets/server.conf`,
 `secrets/mapserver.conf` und `secrets/lorebridge.conf` an die erzeugte
@@ -49,9 +48,9 @@ Modquellen, Aktivierungsstatus und deutschem Uebersetzungsstand.
 
 ```bash
 cp .env.example .env
-./scripts/start.sh
-./scripts/logs.sh
-./scripts/stop.sh
+./scripts/start.sh local
+./scripts/logs.sh local
+./scripts/stop.sh local
 ```
 
 Luanti ist lokal auf UDP-Port `30000` erreichbar. Ueber den Reverse Proxy sind
@@ -88,21 +87,27 @@ und nicht ueber das Frontend-Netz oder Caddy veroeffentlicht. Der Socketzugriff
 ist trotzdem eine administrative Berechtigung und darf nur fuer kontrollierte
 Images und Jobdefinitionen verwendet werden.
 
-Die produktive Compose-Konfiguration wird explizit ohne lokale Overrides
-gestartet:
+Die produktive Konfiguration wird aus einer eigenen Vorlage erstellt und immer
+mit einem ausdruecklichen Profil gestartet:
 
 ```bash
-./scripts/modconfig.sh generate
-docker compose -f compose.yaml -f compose.production.yaml up -d
+cp .env.production.example .env
+# .env und die Dateien unter secrets/ mit den produktiven Werten befuellen
+./scripts/start.sh production
 ```
+
+Vor der Umstellung einer bestehenden Instanz werden `.env`, `secrets/` und die
+bisher wirksame Serverkonfiguration gesichert. `./scripts/start.sh production`
+bricht vor einer Containeraenderung ab, wenn Pflichtpfade oder Geheimdateien
+fehlen. Fuer einen Rueckfall werden der vorherige Git-Commit und die gesicherten
+lokalen Dateien wiederhergestellt und erneut mit dem Profil `production`
+gestartet.
 
 Vor dem ersten Start muessen Podman oder Docker sowie deren Compose-Erweiterung
 installiert sein. Danach:
 
 ```bash
-cp .env.example .env
-./scripts/start.sh
-./scripts/logs.sh luanti
+./scripts/logs.sh production luanti
 ```
 
 ## Verzeichnisse
@@ -133,7 +138,10 @@ Uebersetzungsvorlage werden als `not_translatable` ausgewiesen.
 
 ## Modkonfiguration
 
-Der Teststand wird nicht direkt in `world.mt` oder `server.conf` gepflegt.
+Die Instanzen werden nicht direkt in `world.mt` oder `server.conf` gepflegt.
+Gemeinsame Serverwerte stehen in `config/server/common.conf`, waehrend
+`config/server/local.conf` und `config/server/production.conf` die bewusst
+unterschiedlichen Profilwerte enthalten.
 Jeder erkannte Mod besitzt stattdessen ein Verzeichnis unter `config/mods/`:
 
 ```text
@@ -148,20 +156,25 @@ Abhaengigkeiten und - soweit bereits bekannt - Git-URL und Commit fest.
 `settings.conf` dokumentiert die aus `settingtypes.txt` importierten
 Standardwerte auskommentiert. Nur nicht auskommentierte Werte werden aktiv.
 
-Die Dateien `generated/server.conf` und `generated/world.mt` werden daraus
-erzeugt und sowohl lokal als auch produktiv in den Luanti-Container
-eingebunden:
+Die Profile erzeugen getrennte Dateien unter `generated/local/` und
+`generated/production/`. Dadurch kann eine lokale Generierung keine produktive
+Konfiguration ueberschreiben:
 
 ```bash
-./scripts/modconfig.sh generate
-./scripts/modconfig.sh verify
+./scripts/modconfig.sh generate local
+./scripts/modconfig.sh verify local
+./scripts/modconfig.sh generate production
+./scripts/modconfig.sh verify production
 ./scripts/modconfig.sh status
 ./scripts/modconfig.sh sync --check
 ./scripts/modconfig.sh sync
 ```
 
-`./scripts/start.sh` erzeugt die Konfiguration vor jedem Start erneut und erstellt
-alle Container mit der Compose-Option `--force-recreate` neu.
+`./scripts/start.sh local|production` prueft und erzeugt das gewaehlte Profil
+vor jedem Start erneut und erstellt alle Container mit der Compose-Option
+`--force-recreate` neu. Auch `compose.sh`, `stop.sh` und `logs.sh` verlangen das
+Profil als erstes Argument. Der produktive Preflight verlangt eine nicht leere
+`.env`, die notwendigen produktiven Pfade und nicht leere Geheimdateien.
 Generierte Dateien sollen nicht von Hand geaendert werden.
 
 Ofelia benoetigt lokal den rootless Podman-API-Socket. Dieser wird einmalig mit
