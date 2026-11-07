@@ -170,6 +170,11 @@ Konfiguration ueberschreiben:
 ./scripts/modconfig.sh sync
 ```
 
+`sync` verwendet `LUANTI_MODS_PATH` aus der lokalen `.env`. Ohne gesetzten
+Wert wird nach `state/mods` synchronisiert. Damit aktualisiert derselbe Befehl
+lokal den Testbestand und auf dem Produktivserver dessen eingebundenes
+Modverzeichnis.
+
 `./scripts/start.sh local|production` prueft und erzeugt das gewaehlte Profil
 vor jedem Start erneut und erstellt alle Container mit der Compose-Option
 `--force-recreate` neu. Auch `compose.sh`, `stop.sh` und `logs.sh` verlangen das

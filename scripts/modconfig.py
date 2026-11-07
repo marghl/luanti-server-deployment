@@ -134,9 +134,27 @@ def git(checkout: Path, *arguments: str, capture: bool = False) -> str:
     return completed.stdout.strip() if capture else ""
 
 
+def configured_mods_path() -> Path:
+    env_file = ROOT / ".env"
+    if not env_file.is_file():
+        return STATE_MODS
+
+    configured = parse_pairs(env_file).get("LUANTI_MODS_PATH", "").strip()
+    if not configured:
+        return STATE_MODS
+
+    if len(configured) >= 2 and configured[0] == configured[-1] and configured[0] in "\"'":
+        configured = configured[1:-1]
+    path = Path(configured).expanduser()
+    if not path.is_absolute():
+        path = ROOT / path
+    return path.resolve()
+
+
 def sync(check_only: bool = False) -> None:
     manifests = load_manifests()
     groups = checkout_groups(manifests)
+    mods_path = configured_mods_path()
     git_groups: list[tuple[str, str, str]] = []
     existing = 0
     errors: list[str] = []
@@ -149,7 +167,7 @@ def sync(check_only: bool = False) -> None:
             continue
         url = data["git_url"]
         commit = data["git_commit"].lower()
-        target = STATE_MODS / checkout
+        target = mods_path / checkout
         git_groups.append((checkout, url, commit))
         if not target.exists():
             continue
@@ -165,14 +183,15 @@ def sync(check_only: bool = False) -> None:
     if errors:
         fail("\n".join(errors))
 
+    print(f"Mod-Ziel: {mods_path}")
     if check_only:
         print(f"Sync-Pruefung bestanden: {len(git_groups)} Git-Checkouts")
         print(f"Unveraendert: {existing} Checkouts mit source = existing")
         return
 
-    STATE_MODS.mkdir(parents=True, exist_ok=True)
+    mods_path.mkdir(parents=True, exist_ok=True)
     for checkout, url, commit in git_groups:
-        target = STATE_MODS / checkout
+        target = mods_path / checkout
         print(f"Synchronisiere {checkout} auf {commit}")
         if target.exists():
             git(target, "fetch", "--quiet", "origin")
@@ -180,7 +199,7 @@ def sync(check_only: bool = False) -> None:
             git(target, "checkout", "--quiet", "--detach", commit)
             continue
 
-        temporary = Path(tempfile.mkdtemp(prefix=f".{checkout}.sync-", dir=STATE_MODS))
+        temporary = Path(tempfile.mkdtemp(prefix=f".{checkout}.sync-", dir=mods_path))
         try:
             shutil.rmtree(temporary)
             subprocess.run(
@@ -195,10 +214,10 @@ def sync(check_only: bool = False) -> None:
             if temporary.exists():
                 shutil.rmtree(temporary)
 
-    validate(manifests)
+    validate(manifests, mods_path)
     errors = []
     for checkout, _, commit in git_groups:
-        target = STATE_MODS / checkout
+        target = mods_path / checkout
         actual = git(target, "rev-parse", "HEAD", capture=True).lower()
         if actual != commit:
             errors.append(f"{checkout}: ist auf {actual}, erwartet wird {commit}")
@@ -208,16 +227,20 @@ def sync(check_only: bool = False) -> None:
     print(f"{existing} Checkouts mit source = existing unveraendert")
 
 
-def validate(manifests: dict[str, dict[str, str]]) -> None:
+def validate(manifests: dict[str, dict[str, str]], mods_path: Path = STATE_MODS) -> None:
     checkout_groups(manifests)
     enabled = {name for name, data in manifests.items() if data["enabled"] == "true"}
     errors: list[str] = []
     for name, data in manifests.items():
         if data["enabled"] != "true":
             continue
-        target = STATE_MODS / data["path"]
+        target = mods_path / data["path"]
         if not target.exists():
-            errors.append(f"{name}: Pfad fehlt: {target.relative_to(ROOT)}")
+            try:
+                display_path = target.relative_to(ROOT)
+            except ValueError:
+                display_path = target
+            errors.append(f"{name}: Pfad fehlt: {display_path}")
         for dependency in csv(data.get("depends", "")):
             if dependency in manifests and dependency not in enabled:
                 errors.append(f"{name}: notwendiger Mod {dependency} ist deaktiviert")
