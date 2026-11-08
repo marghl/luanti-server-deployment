@@ -227,7 +227,7 @@ def sync(check_only: bool = False) -> None:
     print(f"{existing} Checkouts mit source = existing unveraendert")
 
 
-def validate(manifests: dict[str, dict[str, str]], mods_path: Path = STATE_MODS) -> None:
+def validate(manifests: dict[str, dict[str, str]], mods_path: Path) -> None:
     checkout_groups(manifests)
     enabled = {name for name, data in manifests.items() if data["enabled"] == "true"}
     errors: list[str] = []
@@ -312,7 +312,7 @@ def server_settings(profile: str) -> list[str]:
 
 def generate(profile: str) -> None:
     manifests = load_manifests()
-    validate(manifests)
+    validate(manifests, configured_mods_path())
     settings = server_settings(profile)
     server_output = f"# Automatisch fuer das Profil {profile} erzeugt.\n"
     server_output += "\n".join(settings) + "\n"
@@ -332,14 +332,14 @@ def generate(profile: str) -> None:
 
 def verify(profile: str) -> None:
     manifests = load_manifests()
-    validate(manifests)
+    validate(manifests, configured_mods_path())
     server_settings(profile)
     print(f"Mod- und Serverkonfiguration fuer Profil {profile} ist konsistent")
 
 
 def status() -> None:
     manifests = load_manifests()
-    validate(manifests)
+    validate(manifests, configured_mods_path())
     counts = {"git": 0, "existing": 0, "enabled": 0, "disabled": 0}
     for data in manifests.values():
         counts[data.get("source", "existing")] = counts.get(data.get("source", "existing"), 0) + 1
