@@ -312,4 +312,3 @@ load_mod_wrench = mods/wrench
 load_mod_xcompat = mods/xcompat
 load_mod_xdecor = mods/xdecor
 load_mod_xdecor_autocut = false
-load_mod_xp_redo = mods/xp_redo
