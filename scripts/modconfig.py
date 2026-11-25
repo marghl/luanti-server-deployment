@@ -108,7 +108,14 @@ def checkout_groups(
         }
         sources = {data.get("source") for _, data in members}
         if len(git_specs) > 1:
-            errors.append(f"{checkout}: widerspruechliche Git-URL oder Commits")
+            details = ", ".join(
+                f"{name}={data.get('git_url', '')}@{data.get('git_commit', '')}"
+                for name, data in sorted(members)
+                if data.get("source") == "git"
+            )
+            errors.append(
+                f"{checkout}: widerspruechliche Git-URL oder Commits: {details}"
+            )
         if "git" in sources and "existing" in sources:
             errors.append(f"{checkout}: source ist teils git, teils existing")
     if errors:
@@ -348,9 +355,15 @@ def status() -> None:
     print(f"Quellen: {counts.get('git', 0)} Git, {counts.get('existing', 0)} noch nicht reproduzierbar")
 
 
+def lint() -> None:
+    manifests = load_manifests()
+    groups = checkout_groups(manifests)
+    print(f"Manifestpruefung bestanden: {len(manifests)} Mods in {len(groups)} Checkouts")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("command", choices=("generate", "verify", "status", "sync"))
+    parser.add_argument("command", choices=("generate", "verify", "status", "sync", "lint"))
     parser.add_argument("profile", nargs="?", choices=PROFILES)
     parser.add_argument(
         "--check", action="store_true",
@@ -359,7 +372,7 @@ def main() -> None:
     args = parser.parse_args()
     if args.command in {"generate", "verify"} and not args.profile:
         parser.error(f"{args.command} erfordert das Profil local oder production")
-    if args.command in {"status", "sync"} and args.profile:
+    if args.command in {"status", "sync", "lint"} and args.profile:
         parser.error(f"{args.command} akzeptiert kein Profil")
     if args.check and args.command != "sync":
         parser.error("--check kann nur mit sync verwendet werden")
@@ -371,6 +384,8 @@ def main() -> None:
         status()
     elif args.command == "sync":
         sync(args.check)
+    elif args.command == "lint":
+        lint()
 
 
 if __name__ == "__main__":

@@ -165,10 +165,16 @@ Konfiguration ueberschreiben:
 ./scripts/modconfig.sh verify local
 ./scripts/modconfig.sh generate production
 ./scripts/modconfig.sh verify production
+./scripts/modconfig.sh lint
 ./scripts/modconfig.sh status
 ./scripts/modconfig.sh sync --check
 ./scripts/modconfig.sh sync
 ```
+
+`lint` prueft ausschliesslich die Manifeststruktur und benoetigt weder Netzwerk
+noch vollstaendige lokale Mod-Checkouts. Insbesondere muessen alle Teilmods mit
+demselben `checkout` exakt dieselbe Git-URL und denselben Commit verwenden. Der
+Befehl eignet sich deshalb fuer Pre-Commit-Hooks und CI.
 
 `generate`, `verify`, `status` und `sync` verwenden `LUANTI_MODS_PATH` aus der
 lokalen `.env`. Ohne gesetzten Wert wird `state/mods` verwendet. Damit pruefen
